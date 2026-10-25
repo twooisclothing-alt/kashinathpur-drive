@@ -949,10 +949,10 @@ let lastPlace='',hudT=0,chunkT=0,sndT=0,roll=0,splashT=0;
 function step(dt){
   const info=roadInfo(px,pz);const off=info.edge>0.5,wet=off&&inWater(px,pz);
   const maxF=wet?10:off?16:22.2,maxR=-7; // top speed 80 km/h
-  if(input.g){speed+=(speed<0?24:(off?9:15))*dt;}
+  if(input.g&&speed<maxF){speed=Math.min(maxF,speed+(speed<0?24:(off?9:15))*dt);}
   if(input.b){speed-=(speed>0.5?26:7)*dt;}
   if(!input.g&&!input.b){speed-=speed*(wet?1.5:off?0.7:0.3)*dt;if(Math.abs(speed)<0.15)speed=0;}
-  if(speed>maxF)speed-=(speed-maxF)*2.5*dt;
+  if(speed>maxF)speed=Math.max(maxF,speed-25*dt); // hard cap: never above 80 km/h
   if(speed<maxR)speed=maxR;
   const want=(input.l?1:0)-(input.r?1:0);
   steer+=(want-steer)*Math.min(1,dt*7);
